@@ -26,7 +26,6 @@ jobs:
         with:
           tag_name: ${{ github.event.inputs.version }}
           generate_release_notes: true
-          prerelease: true
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
@@ -35,3 +34,8 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Assets
+        uses: actions/upload-artifact@v2
+        with:
+          name: lopper
+          path: dist/*

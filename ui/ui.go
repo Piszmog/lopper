@@ -319,24 +319,24 @@ func getBody(m *Model) string {
 		if m.inprogress[i] {
 			m.builder.WriteString(fmt.Sprintf("%s %s\n", m.spinner.View(), r.Name))
 		} else if m.completed[i] {
-			m.builder.WriteString(fmt.Sprintf("%s  %s\n", completedSymbol, r.Name))
+			m.builder.WriteString(fmt.Sprintf("%s  %s\n", completedStyle.Render(symbolCheck), r.Name))
 		} else if m.errors[i] {
-			m.builder.WriteString(fmt.Sprintf("%s  %s\n", errorSymbol, r.Name))
+			m.builder.WriteString(fmt.Sprintf("%s  %s\n", errorStyle.Render(symbolX), r.Name))
 		} else {
 			m.builder.WriteString(fmt.Sprintf("%s  %s\n", " ", r.Name))
 		}
 		for j, deletedBranch := range m.deletedBranches[i] {
 			if j == len(m.deletedBranches[i])-1 {
-				m.builder.WriteString(fmt.Sprintf("   %s %s\n", grayStyle.Render("└"), grayStyle.Render(deletedBranch)))
+				m.builder.WriteString(fmt.Sprintf("   %s %s\n", grayStyle.Render(symbolLeaf), grayStyle.Render(deletedBranch)))
 			} else {
-				m.builder.WriteString(fmt.Sprintf("   %s %s\n", grayStyle.Render("├"), grayStyle.Render(deletedBranch)))
+				m.builder.WriteString(fmt.Sprintf("   %s %s\n", grayStyle.Render(symbolBranch), grayStyle.Render(deletedBranch)))
 			}
 		}
 		for j, err := range m.errMessages[i] {
 			if j == len(m.errMessages[i])-1 {
-				m.builder.WriteString(fmt.Sprintf("   %s %s\n", errorStyle.Render("└"), errorStyle.Render(err.Error())))
+				m.builder.WriteString(fmt.Sprintf("   %s %s\n", errorStyle.Render(symbolLeaf), errorStyle.Render(err.Error())))
 			} else {
-				m.builder.WriteString(fmt.Sprintf("   %s %s\n", errorStyle.Render("├"), errorStyle.Render(err.Error())))
+				m.builder.WriteString(fmt.Sprintf("   %s %s\n", errorStyle.Render(symbolBranch), errorStyle.Render(err.Error())))
 			}
 		}
 	}

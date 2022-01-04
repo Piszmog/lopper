@@ -9,9 +9,6 @@ var symbolCheck = "✔"
 var symbolBranch = "├"
 var symbolLeaf = "└"
 
-var completedSymbol = lipgloss.NewStyle().Foreground(lipgloss.Color("#008000")).Render(symbolCheck)
-var errorSymbol = errorStyle.Render(symbolX)
-
 // Color Styles
 
 var spinnerColor = lipgloss.NewStyle().Foreground(lipgloss.Color("205"))

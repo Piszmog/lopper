@@ -1,15 +1,10 @@
 name: Release
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: The version to release
-        required: true
-        type: string
 permissions:
   contents: write
 jobs:
-  build:
+  release:
     name: Release
     runs-on: ubuntu-latest
     steps:
@@ -30,15 +25,9 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-#      - name: Create Release
-#        uses: softprops/action-gh-release@v1
-#        with:
-#          tag_name: ${{ github.event.inputs.version }}
-#          generate_release_notes: true
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
-          version: latest
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

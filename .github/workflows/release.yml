@@ -27,11 +27,11 @@ jobs:
           tag_name: ${{ github.event.inputs.version }}
           generate_release_notes: true
           prerelease: true
-#      - name: Run GoReleaser
-#        uses: goreleaser/goreleaser-action@v2
-#        with:
-#          distribution: goreleaser
-#          version: latest
-#          args: release --rm-dist
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

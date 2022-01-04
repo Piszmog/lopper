@@ -198,7 +198,9 @@ func (m *Model) processRepos() tea.Cmd {
 	return func() tea.Msg {
 		for i, r := range m.repositories {
 			// limit the number of processes that can process repos
-			m.semaphore.Acquire(context.Background(), 1)
+			if err := m.semaphore.Acquire(context.Background(), 1); err != nil {
+				return errorMsg{err}
+			}
 			m.startProcessMsgs <- inprocessMsg{position: i, repository: r}
 		}
 		return nil

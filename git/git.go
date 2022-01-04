@@ -26,8 +26,8 @@ func IsGitRepository(path string) bool {
 func HasUncommittedChanges(path string) (bool, error) {
 	out, err := exec.Command("git", "-C", path, "status", "--porcelain").Output()
 	if err != nil {
-		if _, ok := err.(*exec.ExitError); ok {
-			return false, fmt.Errorf("failed to run git status: %w", err)
+		if exitError, ok := err.(*exec.ExitError); ok {
+			return false, fmt.Errorf("failed to determine if has uncommitted changes: %v", exitError.Error())
 		}
 	}
 	if len(out) > 0 {

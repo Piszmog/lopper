@@ -14,9 +14,9 @@ func main() {
 		Usage: "removes dead local Git branches",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:     "Path",
+				Name:     "path",
 				Aliases:  []string{"p"},
-				Usage:    "Path to the repository or root directory containing Git repositories",
+				Usage:    "path to the repository or root directory containing Git repositories",
 				Required: true,
 			},
 			&cli.StringSliceFlag{
@@ -37,7 +37,7 @@ func main() {
 		},
 		Action: func(ctx *cli.Context) error {
 			m := ui.NewModel(
-				ui.Path(ctx.String("Path")),
+				ui.Path(ctx.String("path")),
 				ui.ProtectedBranches(ctx.StringSlice("protected-branch")),
 				ui.Concurrency(ctx.Int("concurrency")),
 				ui.DryRun(ctx.Bool("dry-run")),

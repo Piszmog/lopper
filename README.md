@@ -6,9 +6,21 @@
 [![Latest Release](https://img.shields.io/github/v/release/Piszmog/lopper)](https://img.shields.io/github/v/release/Piszmog/lopper)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Deletes dead local Git branches.
+Lopper is a tool that deletes local Git branches that have been merged into the main remote branch.
 
 ![running](assets/running.gif)
+
+## What does it do?
+
+Lopper will,
+
+1. Check if there are any uncommitted changes.
+2. Checks out the main branch.
+3. The main branch is updated (pulled)
+4. Lopper retrieves the list of local branches that have been merged into the main branch.
+5. Lopper deletes the local branches these branches.
+
+See the `Usage` section for more details on modifying the behaviour of Lopper.
 
 ## Installation
 

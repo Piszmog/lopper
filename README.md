@@ -26,6 +26,14 @@ See the `Usage` section for more details on modifying the behaviour of Lopper.
 
 Head over to [Releases](https://github.com/Piszmog/lopper/releases) and download the artifact for your architecture.
 
+### Example Installation
+
+```shell
+tar -xf lopper_0.1.0_linux_x86_64.tar.gz
+rm lopper_0.1.0_linux_x86_64.tar.gz   
+mv lopper /some/directory/that/is/in/your/path
+```
+
 ## Usage
 
 ```shell

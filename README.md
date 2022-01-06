@@ -29,8 +29,13 @@ Head over to [Releases](https://github.com/Piszmog/lopper/releases) and download
 ### Example Installation
 
 ```shell
+# Download the latest 64-bit version for Linux
+gh release download -R Piszmog/lopper -p '*linux_x86_64*'
+# Untar the artifact
 tar -xf lopper_0.1.0_linux_x86_64.tar.gz
+# Delete the artifact
 rm lopper_0.1.0_linux_x86_64.tar.gz   
+# Move the binary to a directory of on your PATH
 mv lopper /some/directory/that/is/in/your/path
 ```
 

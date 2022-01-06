@@ -47,3 +47,11 @@ $ ./lopper -p /path/to/repo/or/directory/of/repos
 | Command     | Description                                      |
 |:------------|:-------------------------------------------------|
 | `help`, `h` | Shows a list of commands or help for one command |
+
+## Dependencies
+
+* [bubbles](https://github.com/charmbracelet/bubbles)
+* [bubbletea](https://github.com/charmbracelet/bubbletea/)
+* [lipgloss](https://github.com/charmbracelet/lipgloss)
+* [urfave/cli](https://github.com/urfave/cli)
+* [testify](https://github.com/stretchr/testify)

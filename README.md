@@ -47,13 +47,13 @@ $ ./lopper -p /path/to/repo/or/directory/of/repos
 
 ### Options
 
-| Option                 | Default | Required  | Description                                                          |
-|:-----------------------|:-------:|:---------:|:---------------------------------------------------------------------|
-| `--path`, `-p`         |   N/A   | **True**  | The path to the repository or directory of repositories              |
-| `--protected-branch`   |   N/A   | **False** | The branches other than `main` and `master` to protect from deletion |
-| `--concurrency`, `-c`  |   `1`   | **False** | The number of repositories to process in parallel                    |
-| `--dry-run`            | `false` | **False** | Run `lopper` without actually deleting any branches                  |
-| `--help`, `-h`         | `false` | **False** | Shows help                                                           |
+| Option                 | Default | Required  | Description                                                                                                                  |
+|:-----------------------|:-------:|:---------:|:-----------------------------------------------------------------------------------------------------------------------------|
+| `--path`, `-p`         |   N/A   | **True**  | The path to the repository or directory of repositories                                                                      |
+| `--protected-branch`   |   N/A   | **False** | The branches other than `main` and `master` to protect from deletion (e.g. `--protected-branch dev --protected-pranch prod`) |
+| `--concurrency`, `-c`  |   `1`   | **False** | The number of repositories to process in parallel                                                                            |
+| `--dry-run`            | `false` | **False** | Run `lopper` without actually deleting any branches                                                                          |
+| `--help`, `-h`         | `false` | **False** | Shows help                                                                                                                   |
 
 ### Commands
 

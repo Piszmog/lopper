@@ -18,7 +18,7 @@ Lopper will,
 2. Checks out the main branch.
 3. The main branch is updated (pulled)
 4. Lopper retrieves the list of local branches that have been merged into the main branch.
-5. Lopper deletes the local branches these branches.
+5. Lopper deletes the local branches.
 
 See the `Usage` section for more details on modifying the behaviour of Lopper.
 
@@ -35,7 +35,7 @@ gh release download -R Piszmog/lopper -p '*linux_x86_64*'
 tar -xf lopper_0.1.0_linux_x86_64.tar.gz
 # Delete the artifact
 rm lopper_0.1.0_linux_x86_64.tar.gz   
-# Move the binary to a directory of on your PATH
+# Move the binary to a directory on your PATH
 mv lopper /some/directory/that/is/in/your/path
 ```
 
@@ -50,7 +50,7 @@ $ ./lopper -p /path/to/repo/or/directory/of/repos
 | Option                 | Default | Required  | Description                                                          |
 |:-----------------------|:-------:|:---------:|:---------------------------------------------------------------------|
 | `--path`, `-p`         |   N/A   | **True**  | The path to the repository or directory of repositories              |
-| `--protected-branches` |   N/A   | **False** | The branches other than `main` and `master` to protect from deletion |
+| `--protected-branch`   |   N/A   | **False** | The branches other than `main` and `master` to protect from deletion |
 | `--concurrency`, `-c`  |   `1`   | **False** | The number of repositories to process in parallel                    |
 | `--dry-run`            | `false` | **False** | Run `lopper` without actually deleting any branches                  |
 | `--help`, `-h`         | `false` | **False** | Shows help                                                           |

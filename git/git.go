@@ -22,20 +22,6 @@ func IsGitRepository(path string) bool {
 	return true
 }
 
-// HasUncommittedChanges returns true if the given path has uncommitted changes.
-func HasUncommittedChanges(path string) (bool, error) {
-	out, err := exec.Command("git", "-C", path, "status", "--porcelain").Output()
-	if err != nil {
-		if exitError, ok := err.(*exec.ExitError); ok {
-			return false, fmt.Errorf("failed to determine if has uncommitted changes: %v", exitError.Error())
-		}
-	}
-	if len(out) > 0 {
-		return true, nil
-	}
-	return false, nil
-}
-
 // CheckoutBranch checks out the given branch in the given repository.
 func CheckoutBranch(path string, branch string) error {
 	if err := exec.Command("git", "-C", path, "checkout", branch).Run(); err != nil {
@@ -50,7 +36,14 @@ func CheckoutBranch(path string, branch string) error {
 func Pull(path string) error {
 	if err := exec.Command("git", "-C", path, "pull").Run(); err != nil {
 		if exitError, ok := err.(*exec.ExitError); ok {
-			return fmt.Errorf("failed to pull latest changes: %s", exitError.Error())
+			switch exitError.ExitCode() {
+			case 1:
+				return fmt.Errorf("remote repository not found")
+			case 128:
+				return fmt.Errorf("there is a conflict between remote and local changes")
+			default:
+				return fmt.Errorf("failed to pull latest changes: %s", exitError.Error())
+			}
 		}
 	}
 	return nil

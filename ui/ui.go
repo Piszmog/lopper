@@ -24,9 +24,7 @@ type Model struct {
 
 	// state properties
 	repositories    []git.Repository
-	inprogress      map[int]bool
-	completed       map[int]bool
-	errors          map[int]bool
+	states          map[int]state
 	deletedBranches map[int][]string
 	errMessages     map[int][]error
 
@@ -43,12 +41,18 @@ type Model struct {
 	err              error
 }
 
+type state int
+
+const (
+	inprogressState state = iota
+	completedState
+	errorState
+)
+
 // NewModel creates a new Model.
 func NewModel(options ...Option) *Model {
 	m := &Model{
-		inprogress:      make(map[int]bool),
-		completed:       make(map[int]bool),
-		errors:          make(map[int]bool),
+		states:          make(map[int]state),
 		deletedBranches: make(map[int][]string),
 		errMessages:     make(map[int][]error),
 		spinner:         newSpinner(),
@@ -60,7 +64,7 @@ func NewModel(options ...Option) *Model {
 }
 
 func newSpinner() spinner.Model {
-	s := spinner.NewModel()
+	s := spinner.New()
 	s.Spinner = spinner.Dot
 	s.Style = spinnerColor
 	return s
@@ -143,7 +147,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// Handle starting the process of a repository. Updates the Model and starts the processing of the specific
 	// repository and enables the receiving of the next inprocess message.
 	case inprocessMsg:
-		m.inprogress[msg.position] = true
+		m.states[msg.position] = inprogressState
 		// use tea.Batch to start multiple commands in parallel
 		return m, tea.Batch(
 			m.processRepo(msg.position, msg.repository),
@@ -152,11 +156,10 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// Handle completing the process of a repository. Updates the model, allows the next repo to be processed and
 	// enables receiving of the next completed message.
 	case completedMsg:
-		m.inprogress[msg.position] = false
 		if msg.errs != nil {
-			m.errors[msg.position] = true
+			m.states[msg.position] = errorState
 		} else {
-			m.completed[msg.position] = true
+			m.states[msg.position] = completedState
 		}
 		m.deletedBranches[msg.position] = msg.branches
 		m.errMessages[msg.position] = msg.errs
@@ -225,24 +228,16 @@ func (m *Model) processRepo(position int, repo git.Repository) tea.Cmd {
 
 func process(repo git.Repository, protectedBranches []string, dryRun bool) ([]string, []error) {
 	fullPath := filepath.Join(repo.Path, repo.Name)
-	// do not process a repo that has uncommitted changes, we do not want to deal with any merge conflicts
-	hasChanges, err := git.HasUncommittedChanges(fullPath)
-	if err != nil {
-		return nil, []error{err}
-	}
-	if hasChanges {
-		return nil, []error{errors.New("has uncommitted changes")}
-	}
 	// Default to "main" branch. If there is an error, will assume the repo's main branch is "master" and try again.
 	mainBranch := "main"
-	if err = git.CheckoutBranch(fullPath, mainBranch); err != nil {
+	if err := git.CheckoutBranch(fullPath, mainBranch); err != nil {
 		mainBranch = "master"
 		if err = git.CheckoutBranch(fullPath, mainBranch); err != nil {
 			return nil, []error{errors.New("the main branch has not been checked out locally")}
 		}
 	}
 	// ensure everything is up to date so we know for sure which branches are dead (merged)
-	if err = git.Pull(fullPath); err != nil {
+	if err := git.Pull(fullPath); err != nil {
 		return nil, []error{err}
 	}
 	// get all branches that have been merged into the main branch
@@ -298,9 +293,18 @@ func getHeader(m *Model) string {
 	} else if len(m.repositories) == 0 {
 		return "There are no repositories in this directory."
 	} else {
+		completedCount := 0
+		errorCount := 0
+		for _, s := range m.states {
+			if s == completedState {
+				completedCount++
+			} else if s == errorState {
+				errorCount++
+			}
+		}
 		return fmt.Sprintf(
 			"%s\n%s",
-			fmt.Sprintf("Repositories (%d/%d)", len(m.completed)+len(m.errors), len(m.repositories)),
+			fmt.Sprintf("Repositories (%d/%d)", completedCount+errorCount, len(m.repositories)),
 			grayStyle.Render(fmt.Sprintf("Branches Deleted - %d", getTotalDeletedBranches(m.deletedBranches))),
 		)
 	}
@@ -318,11 +322,11 @@ func getBody(m *Model) string {
 	defer m.builder.Reset()
 
 	for i, r := range m.repositories {
-		if m.inprogress[i] {
+		if m.states[i] == inprogressState {
 			m.builder.WriteString(fmt.Sprintf("%s %s\n", m.spinner.View(), r.Name))
-		} else if m.completed[i] {
+		} else if m.states[i] == completedState {
 			m.builder.WriteString(fmt.Sprintf("%s  %s\n", completedStyle.Render(symbolCheck), r.Name))
-		} else if m.errors[i] {
+		} else if m.states[i] == errorState {
 			m.builder.WriteString(fmt.Sprintf("%s  %s\n", errorStyle.Render(symbolX), r.Name))
 		} else {
 			m.builder.WriteString(fmt.Sprintf("%s  %s\n", " ", r.Name))

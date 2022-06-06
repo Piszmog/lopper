@@ -79,3 +79,64 @@ func GetMergedBranches(path string, mainBranch string) ([]string, error) {
 	}
 	return mergedBranches, nil
 }
+
+// GetMergedSquashedBranches returns a list of merged squashed branches in the given repository.
+//
+// Credit: https://github.com/not-an-aardvark/git-delete-squashed
+func GetMergedSquashedBranches(path string, mainBranch string, mergedBranches []string) ([]string, error) {
+	out, err := exec.Command("git", "-C", path, "for-each-ref", "refs/heads/", "--format=%(refname:short)").Output()
+	if err != nil {
+		if exitError, ok := err.(*exec.ExitError); ok {
+			return nil, fmt.Errorf("failed to get branches: %s", exitError.Error())
+		}
+	}
+	allBranches := strings.Split(string(out), "\n")
+	var squashedBranches []string
+	for _, branch := range allBranches {
+		if branch == mainBranch {
+			continue
+		}
+		if len(branch) == 0 {
+			continue
+		}
+		// skip merged branches since they were merged commits and will not show up in this process
+		if contains(mergedBranches, branch) {
+			continue
+		}
+		ancestorHash, err := exec.Command("git", "-C", path, "merge-base", mainBranch, branch).Output()
+		if err != nil {
+			return nil, fmt.Errorf("failed to get ancestor hash: %w", err)
+		}
+		treeId, err := exec.Command("git", "-C", path, "rev-parse", fmt.Sprintf("%s^{tree}", branch)).Output()
+		if err != nil {
+			return nil, fmt.Errorf("failed to get tree id: %w", err)
+		}
+		danglingCommitId, err := exec.Command("git", "-C", path, "commit-tree", trimNewline(string(treeId)), "-p", trimNewline(string(ancestorHash)), "-m", "Temp commit").Output()
+		if err != nil {
+			return nil, fmt.Errorf("failed to get dangling commit id: %w", err)
+		}
+		commitId, err := exec.Command("git", "-C", path, "cherry", mainBranch, trimNewline(string(danglingCommitId))).Output()
+		if err != nil {
+			return nil, fmt.Errorf("failed to get commit id: %w", err)
+		}
+		if strings.HasPrefix(string(commitId), "-") {
+			squashedBranches = append(squashedBranches, branch)
+		}
+	}
+	return squashedBranches, nil
+}
+
+// function to check if string is in slice
+func contains(s []string, e string) bool {
+	for _, a := range s {
+		if a == e {
+			return true
+		}
+	}
+	return false
+}
+
+// function to trim newline
+func trimNewline(s string) string {
+	return strings.TrimSuffix(s, "\n")
+}

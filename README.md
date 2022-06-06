@@ -17,7 +17,7 @@ Lopper will,
 1. Check if there are any uncommitted changes.
 2. Checks out the main branch.
 3. The main branch is updated (pulled)
-4. Lopper retrieves the list of local branches that have been merged into the main branch.
+4. Lopper retrieves the list of local branches that have been merged commit and squashed merged into the main branch.
 5. Lopper deletes the local branches.
 
 See the `Usage` section for more details on modifying the behaviour of Lopper.

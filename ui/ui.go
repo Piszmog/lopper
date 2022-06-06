@@ -245,6 +245,12 @@ func process(repo git.Repository, protectedBranches []string, dryRun bool) ([]st
 	if err != nil {
 		return nil, []error{err}
 	}
+	squashedBranches, err := git.GetMergedSquashedBranches(fullPath, mainBranch, mergedBranches)
+	if err != nil {
+		return nil, []error{err}
+	}
+	mergedBranches = append(mergedBranches, squashedBranches...)
+
 	var branches []string
 	var errs []error
 	for _, branch := range mergedBranches {

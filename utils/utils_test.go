@@ -33,3 +33,27 @@ func TestContains(t *testing.T) {
 		})
 	}
 }
+
+func TestTrimNewline(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{
+			name:     "Trim Newline",
+			input:    "a\n",
+			expected: "a",
+		},
+		{
+			name:     "Trim Nothing",
+			input:    "a",
+			expected: "a",
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			assert.Equal(t, test.expected, utils.TrimNewline(test.input))
+		})
+	}
+}

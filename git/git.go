@@ -2,6 +2,7 @@ package git
 
 import (
 	"fmt"
+	"lopper/utils"
 	"os/exec"
 	"strings"
 )
@@ -100,7 +101,7 @@ func GetMergedSquashedBranches(path string, mainBranch string, mergedBranches []
 			continue
 		}
 		// skip merged branches since they were merged commits and will not show up in this process
-		if contains(mergedBranches, branch) {
+		if utils.Contains(mergedBranches, branch) {
 			continue
 		}
 		ancestorHash, err := exec.Command("git", "-C", path, "merge-base", mainBranch, branch).Output()
@@ -111,11 +112,11 @@ func GetMergedSquashedBranches(path string, mainBranch string, mergedBranches []
 		if err != nil {
 			return nil, fmt.Errorf("failed to get tree id: %w", err)
 		}
-		danglingCommitId, err := exec.Command("git", "-C", path, "commit-tree", trimNewline(string(treeId)), "-p", trimNewline(string(ancestorHash)), "-m", "Temp commit").Output()
+		danglingCommitId, err := exec.Command("git", "-C", path, "commit-tree", utils.TrimNewline(string(treeId)), "-p", utils.TrimNewline(string(ancestorHash)), "-m", "Temp commit").Output()
 		if err != nil {
 			return nil, fmt.Errorf("failed to get dangling commit id: %w", err)
 		}
-		commitId, err := exec.Command("git", "-C", path, "cherry", mainBranch, trimNewline(string(danglingCommitId))).Output()
+		commitId, err := exec.Command("git", "-C", path, "cherry", mainBranch, utils.TrimNewline(string(danglingCommitId))).Output()
 		if err != nil {
 			return nil, fmt.Errorf("failed to get commit id: %w", err)
 		}
@@ -124,19 +125,4 @@ func GetMergedSquashedBranches(path string, mainBranch string, mergedBranches []
 		}
 	}
 	return squashedBranches, nil
-}
-
-// function to check if string is in slice
-func contains(s []string, e string) bool {
-	for _, a := range s {
-		if a == e {
-			return true
-		}
-	}
-	return false
-}
-
-// function to trim newline
-func trimNewline(s string) string {
-	return strings.TrimSuffix(s, "\n")
 }

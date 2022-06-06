@@ -31,6 +31,13 @@ Head over to [Releases](https://github.com/Piszmog/lopper/releases) and download
 ```shell
 # Download the latest 64-bit version for Linux
 gh release download -R Piszmog/lopper -p '*linux_x86_64*'
+# Download the latest 64-bit Intel version for macOS
+gh release download -R Piszmog/lopper -p '*macos_x86_64*'
+# Download the latest Silicon for macOS
+gh release download -R Piszmog/lopper -p '*macos_arm64*'
+# Download the latest 64-bit version for Windows
+gh release download -R Piszmog/lopper -p '*windows_x86_64*'
+
 # Untar the artifact
 tar -xf lopper_0.1.0_linux_x86_64.tar.gz
 # Delete the artifact

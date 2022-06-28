@@ -3,7 +3,7 @@ module lopper
 go 1.17
 
 require (
-	github.com/charmbracelet/bubbles v0.11.0
+	github.com/charmbracelet/bubbles v0.12.0
 	github.com/charmbracelet/bubbletea v0.22.0
 	github.com/charmbracelet/lipgloss v0.5.0
 	github.com/stretchr/testify v1.7.5

@@ -52,7 +52,7 @@ func Pull(path string) error {
 
 // DeleteBranch deletes the given branch in the given repository.
 func DeleteBranch(path string, branch string) error {
-	if err := exec.Command("git", "-C", path, "branch", "-d", branch).Run(); err != nil {
+	if err := exec.Command("git", "-C", path, "branch", "-D", branch).Run(); err != nil {
 		if exitError, ok := err.(*exec.ExitError); ok {
 			return fmt.Errorf("failed to delete branch %s: %s", branch, exitError.Error())
 		}

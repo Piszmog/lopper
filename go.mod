@@ -7,7 +7,7 @@ require (
 	github.com/charmbracelet/bubbletea v0.22.1
 	github.com/charmbracelet/lipgloss v0.6.0
 	github.com/stretchr/testify v1.8.0
-	github.com/urfave/cli/v2 v2.19.2
+	github.com/urfave/cli/v2 v2.20.3
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 )
 

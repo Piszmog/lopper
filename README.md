@@ -24,9 +24,20 @@ See the `Usage` section for more details on modifying the behaviour of Lopper.
 
 ## Installation
 
+### Homebrew
+
+Install by running commands
+
+```shell
+brew tap piszmog/tools
+brew install piszmog/tools/lopper
+```
+
+### Manual
+
 Head over to [Releases](https://github.com/Piszmog/lopper/releases) and download the artifact for your architecture.
 
-### Example Installation
+#### Example Installation
 
 ```shell
 # Download the latest 64-bit version for Linux
